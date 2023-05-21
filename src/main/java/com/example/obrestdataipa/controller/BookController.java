@@ -2,6 +2,8 @@ package com.example.obrestdataipa.controller;
 
 import com.example.obrestdataipa.entities.Book;
 import com.example.obrestdataipa.repository.BookRepository;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +29,8 @@ public class BookController {
     }
 
     @GetMapping("/api/books/{id}")
-    public ResponseEntity<Book> findOneById (@PathVariable Long id) {
+    @ApiOperation("Find book by primary key")
+    public ResponseEntity<Book> findOneById (@ApiParam("Primary key type Long") @PathVariable Long id) {
         Optional<Book> optBook = bookRepository.findById(id);
 
         //Opción 1
@@ -51,7 +54,7 @@ public class BookController {
             return ResponseEntity.badRequest().build();
         }
         Book aux = bookRepository.save(book);
-        return ResponseEntity.ok(book);
+        return ResponseEntity.ok(aux);
     }
 
     @PutMapping("/api/books")
@@ -80,7 +83,7 @@ public class BookController {
     }
     @DeleteMapping("/api/books")
     public ResponseEntity<Book> deleteAllBook () {
-        if (bookRepository.count() != 0) {
+        if (bookRepository.count() == 0) {
             log.warn("Traying to delete a non existing book");
             return ResponseEntity.notFound().build();
 
